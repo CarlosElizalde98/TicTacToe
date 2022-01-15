@@ -1,0 +1,25 @@
+#game-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-board {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5%;
+    border: 2px solid black;
+    width: 400px;
+    height: 400px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+}
+
+.checkbox {
+    border: 1px solid black;
+    width: 100%;
+}
