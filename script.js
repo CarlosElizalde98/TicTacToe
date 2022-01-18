@@ -1,10 +1,14 @@
 const gameDisplay = document.querySelector('#game-display');
+const gameStart = document.querySelector('#game-start');
 
 const gameBoard = (() => {
-    let gameSquares = [];
+    let gameSquares = ["","","","","","","","",""];
+    
     const square = document.createElement('div');
     square.classList.add('game-board')
+
     const add = () => {
+        square.innerHTML = ""
         for (let i = 0; i < 3; i++) {
             const row = document.createElement('div');
             row.classList.add('row');
@@ -14,14 +18,25 @@ const gameBoard = (() => {
                 checkBox.classList.add('checkbox');
                 row.appendChild(checkBox);
             }
-    }
-    gameDisplay.appendChild(square);
+        }
+        gameDisplay.appendChild(square);
     };
-    return {add, };
+    return {add, gameSquares};
 })();
 
-const player = (name) => {
+const player = (symbol) => {
+
+    const getSymbol = () => symbol;
+    return {getSymbol};
 
 };
 
-gameBoard.add();
+const displayController = (() => {
+    playerOne = document.querySelector('#Player1');
+    playerTwo = document.querySelector('#Player2');
+
+    
+    
+})();
+
+gameStart.addEventListener('click', gameBoard.add);
