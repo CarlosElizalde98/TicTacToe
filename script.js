@@ -19,7 +19,13 @@ const gameBoard = (() => {
                 row.appendChild(checkBox);
             }
         }
+        
         gameDisplay.appendChild(square);
+
+        let checkboxes = document.querySelectorAll(".checkbox");
+        for (i = 0; i < checkboxes.length;i++) {
+            checkboxes[i].setAttribute("array-place", i);
+        }
     };
     return {add, gameSquares};
 })();
@@ -35,7 +41,8 @@ const displayController = (() => {
     playerOne = document.querySelector('#Player1');
     playerTwo = document.querySelector('#Player2');
 
-    
+    playerOne.addEventListener('click', player(playerOne.value).getSymbol);
+    playerTwo.addEventListener('click', player(playerTwo.value).getSymbol);
     
 })();
 
