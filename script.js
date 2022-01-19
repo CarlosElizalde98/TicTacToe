@@ -31,19 +31,24 @@ const gameBoard = (() => {
     
         checkboxes.forEach((checkbox) => 
         checkbox.addEventListener('click', (e) => {
+            if (e.target.textContent !== "") return;
             gameController.playRound(parseInt(e.target.getAttribute('array-place')));
             displayController.updateGameBoard();
         })
     );
     };
 
+    //Add a symbol into Game board
     const select = (index, symbol) => {
         if (index > gameSquares.length) {
             return;
         }
+        
         gameSquares[index] = symbol;
+        
     }
 
+    //Return current symbol from array
     const getSymbol = (index) => {
         if (index > gameSquares.length) {
             return;
@@ -73,15 +78,16 @@ const displayController = (() => {
     gameBoard.add();
 
     const checkboxes = document.querySelectorAll('.checkbox');
-    console.log(checkboxes)
     const messageElement = document.querySelector('#message');
-     
+    
+    //Updates gameboard with the current symbol from Player
     const updateGameBoard = () => {
         for (let i = 0; i < checkboxes.length; i++) {
             checkboxes[i].innerHTML = gameBoard.getSymbol(i);
         }
     };
 
+    //Sets message on top of the game board
     const setGameMessage = (message) => {
         messageElement.textContent = message;
     }
@@ -92,11 +98,10 @@ const displayController = (() => {
 const gameController = (() => {
 
     let winStatus = false;
-    let round = 0;
+    let round = 1;
 
     playerOne = player('X').getSymbol();
     playerTwo = player('O').getSymbol();
-    console.log(playerOne)
 
     const playRound = (checkBoxIndex) => {
         gameBoard.select(checkBoxIndex, getCurrentPlayerSymbol());
@@ -111,5 +116,14 @@ const gameController = (() => {
         return round % 2 === 1 ? playerOne : playerTwo;
     };
 
-    return {playRound, getCurrentPlayerSymbol};
+    const getWinStatus = () => {
+        return winStatus;
+    }
+
+    const reset = () => {
+        round = 1;
+        winStatus = false;
+    }
+
+    return {playRound, reset, getCurrentPlayerSymbol};
 })();
