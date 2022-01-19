@@ -2,7 +2,7 @@ const gameDisplay = document.querySelector('#game-display');
 const gameStart = document.querySelector('#game-start');
 
 const gameBoard = (() => {
-    let gameSquares = ["X","O","X","","","","","",""];
+    let gameSquares = ["","","","","","","","",""];
     
     const square = document.createElement('div');
     square.classList.add('game-board')
@@ -28,8 +28,35 @@ const gameBoard = (() => {
         for (i = 0; i < checkboxes.length;i++) {
             checkboxes[i].setAttribute("array-place", i);
         }
+    
+        checkboxes.forEach((checkbox) => 
+        checkbox.addEventListener('click', (e) => {
+            gameController.playRound(parseInt(e.target.getAttribute('array-place')));
+            displayController.updateGameBoard();
+        })
+    );
     };
-    return {add, gameSquares};
+
+    const select = (index, symbol) => {
+        if (index > gameSquares.length) {
+            return;
+        }
+        gameSquares[index] = symbol;
+    }
+
+    const getSymbol = (index) => {
+        if (index > gameSquares.length) {
+            return;
+        }
+        return gameSquares[index];
+    }
+
+    const reset = () => {
+        for (let i = 0; i < gameSquares.length; i++) {
+            gameSquares[i] = "";
+        }
+    }
+    return {add, select, getSymbol, reset};
 })();
 
 //Basic factory for creation of game players.
@@ -42,23 +69,47 @@ const player = (symbol) => {
 
 //Controls display of content for game board.
 const displayController = (() => {
-    playerOne = document.querySelector('#Player1');
-    playerTwo = document.querySelector('#Player2');
 
-    playerOne.addEventListener('click', player(playerOne.value).getSymbol);
-    playerTwo.addEventListener('click', player(playerTwo.value).getSymbol);
+    gameBoard.add();
 
-    const add = () => {
-    let checkboxes = document.querySelectorAll('.checkbox');
-    let checkboxArray = Array.from(checkboxes);
-    
-    checkboxArray.forEach( checkbox => {
-        let arrayPlace = checkbox.getAttribute('array-place');
-        checkbox.innerHTML = gameBoard.gameSquares[arrayPlace];
-    })
+    const checkboxes = document.querySelectorAll('.checkbox');
+    console.log(checkboxes)
+    const messageElement = document.querySelector('#message');
+     
+    const updateGameBoard = () => {
+        for (let i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].innerHTML = gameBoard.getSymbol(i);
+        }
+    };
+
+    const setGameMessage = (message) => {
+        messageElement.textContent = message;
     }
 
-    return {add};
+    return {updateGameBoard, setGameMessage};
 })();
 
-gameStart.addEventListener('click', gameBoard.add);
+const gameController = (() => {
+
+    let winStatus = false;
+    let round = 0;
+
+    playerOne = player('X').getSymbol();
+    playerTwo = player('O').getSymbol();
+    console.log(playerOne)
+
+    const playRound = (checkBoxIndex) => {
+        gameBoard.select(checkBoxIndex, getCurrentPlayerSymbol());
+        round++;
+        displayController.setGameMessage(
+            `Player ${getCurrentPlayerSymbol()}'s turn.`
+        );
+      
+    };
+
+    const getCurrentPlayerSymbol = () => {
+        return round % 2 === 1 ? playerOne : playerTwo;
+    };
+
+    return {playRound, getCurrentPlayerSymbol};
+})();
