@@ -31,7 +31,7 @@ const gameBoard = (() => {
     
         checkboxes.forEach((checkbox) => 
         checkbox.addEventListener('click', (e) => {
-            if (e.target.textContent !== "") return;
+            if (e.target.textContent !== "" || gameController.getWinStatus()) return;
             gameController.playRound(parseInt(e.target.getAttribute('array-place')));
             displayController.updateGameBoard();
         })
@@ -43,9 +43,7 @@ const gameBoard = (() => {
         if (index > gameSquares.length) {
             return;
         }
-        
-        gameSquares[index] = symbol;
-        
+        gameSquares[index] = symbol; 
     }
 
     //Return current symbol from array
@@ -61,7 +59,7 @@ const gameBoard = (() => {
             gameSquares[i] = "";
         }
     }
-    return {add, select, getSymbol, reset};
+    return {gameSquares, add, select, getSymbol, reset};
 })();
 
 //Basic factory for creation of game players.
@@ -105,16 +103,50 @@ const gameController = (() => {
 
     const playRound = (checkBoxIndex) => {
         gameBoard.select(checkBoxIndex, getCurrentPlayerSymbol());
-        round++;
-        displayController.setGameMessage(
-            `Player ${getCurrentPlayerSymbol()}'s turn.`
-        );
-      
+
+        checkWin();
+
+        if (getWinStatus()) {
+            displayController.setGameMessage(`Player ${getCurrentPlayerSymbol()} wins!`)
+            return;
+        }
+        if (round === 9) {
+            displayController.setGameMessage("It's a Draw! Press restart to play again.");
+            winStatus = true;
+            return;
+        }
+        
+            round++;
+            displayController.setGameMessage(
+                `Player ${getCurrentPlayerSymbol()}'s turn.`
+            );
+        
     };
 
     const getCurrentPlayerSymbol = () => {
         return round % 2 === 1 ? playerOne : playerTwo;
     };
+
+    const checkWin = () => {
+        const winSpace = [
+            [0,1,2],
+            [3,4,5],
+            [6,7,8],
+            [0,3,6],
+            [1,4,7],
+            [2,5,8],
+            [0,4,8],
+            [2,4,6],
+        ];
+
+        winSpace.forEach((item, index) => {
+            if (gameBoard.gameSquares[item[0]] === getCurrentPlayerSymbol() &&
+            gameBoard.gameSquares[item[1]] === getCurrentPlayerSymbol() && 
+            gameBoard.gameSquares[item[2]] === getCurrentPlayerSymbol()){
+                winStatus = true;
+            }
+        })
+    }
 
     const getWinStatus = () => {
         return winStatus;
@@ -125,5 +157,5 @@ const gameController = (() => {
         winStatus = false;
     }
 
-    return {playRound, reset, getCurrentPlayerSymbol};
+    return {playRound, getWinStatus, reset, getCurrentPlayerSymbol};
 })();
