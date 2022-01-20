@@ -166,5 +166,5 @@ const gameController = (() => {
         winStatus = false;
     }
 
-    return {playRound, getWinStatus, reset, getCurrentPlayerSymbol};
+    return {playRound, getWinStatus, reset};
 })();
