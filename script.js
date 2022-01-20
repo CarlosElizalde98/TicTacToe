@@ -77,7 +77,15 @@ const displayController = (() => {
 
     const checkboxes = document.querySelectorAll('.checkbox');
     const messageElement = document.querySelector('#message');
-    
+    const restartBtn = document.querySelector('#restart-button');
+
+    restartBtn.addEventListener('click', () => {
+        gameBoard.reset();
+        gameController.reset();
+        updateGameBoard();
+        setGameMessage('Click any square to start!');
+    });
+
     //Updates gameboard with the current symbol from Player
     const updateGameBoard = () => {
         for (let i = 0; i < checkboxes.length; i++) {
@@ -101,6 +109,7 @@ const gameController = (() => {
     playerOne = player('X').getSymbol();
     playerTwo = player('O').getSymbol();
 
+    //Controls how the round is played.
     const playRound = (checkBoxIndex) => {
         gameBoard.select(checkBoxIndex, getCurrentPlayerSymbol());
 
